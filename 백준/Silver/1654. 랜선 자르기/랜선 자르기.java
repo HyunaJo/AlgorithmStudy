@@ -18,7 +18,6 @@ public class Main {
 	
 	public static void findMax(int[] lines, int K, int N) {
 		long start = 0;
-		long test = 2147483647;
 		long end = (long)lines[K-1]+1; // 자를 수 있는 최대 길이 + 1
 		long mid = (start+end)/2;
 		int newLineCnt = 0; // 잘라서 만들어낸 랜선 개수
