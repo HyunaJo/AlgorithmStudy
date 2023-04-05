@@ -15,7 +15,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        ArrayList<Integer> results = new ArrayList<>();
 
         int T = Integer.parseInt(br.readLine()); // 테스트케이스 수
 
@@ -41,11 +40,8 @@ public class Main {
                     }
                 }
             }
-            results.add(warmCnt);
+            bw.write(Integer.toString(warmCnt)+"\n");
         }
-
-        for(int result:results)
-            bw.write(Integer.toString(result)+"\n");
         bw.flush();
     }
 
