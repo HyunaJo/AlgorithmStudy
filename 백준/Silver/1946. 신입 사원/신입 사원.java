@@ -18,10 +18,7 @@ public class Main {
 
         @Override
         public int compareTo(Applicant o){
-            if(this.document != o.document)
-                return this.document - o.document;
-            else
-                return this.interview - o.interview;
+            return this.document - o.document;
         }
     }
     
