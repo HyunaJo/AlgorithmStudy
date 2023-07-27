@@ -14,12 +14,10 @@ public class Main {
     public static class Runner implements Comparable<Runner>{
         long ability; // 실력
         int rank; // 현재 순위
-        int bestRank; // 최선의 순위
 
         public Runner(long ability, int rank){
             this.ability = ability;
             this.rank = rank;
-            this.bestRank = 0;
         }
 
         @Override
@@ -58,8 +56,7 @@ public class Main {
         for(int i=0;i<N;i++){
             Runner runner = runners[i];
             update(runner.rank-1, 1);
-            runner.bestRank = sum(0,runner.rank-1);
-            bestRanks[runner.rank-1] = runner.bestRank;
+            bestRanks[runner.rank-1] = sum(0,runner.rank-1);
         }
 
         for(int i=0;i<N;i++){
