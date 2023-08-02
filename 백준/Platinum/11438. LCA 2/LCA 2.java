@@ -29,9 +29,10 @@ public class Main {
             tree[b].add(a);
         }
 
-        K = -1;
-        for(int i=1;i<=N;i*=2)
-            K++;
+//        K = -1;
+//        for(int i=1;i<=N;i*=2)
+//            K++;
+        K = (int) Math.ceil( Math.log(N) / Math.log(2) );
 
         depth = new int[N+1];
         parent = new int[K+1][N+1];
