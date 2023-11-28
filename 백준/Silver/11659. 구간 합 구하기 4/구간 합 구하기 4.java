@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     public static int N,M;
-    public static int[] sum;
+    public static int[] dp;
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,22 +16,21 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        sum = new int[N+1];
+        dp = new int[N+1];
         st = new StringTokenizer(br.readLine());
-        for(int i=1;i<=N;i++) {
-            sum[i] = sum[i-1]+Integer.parseInt(st.nextToken()); // 0~i까지의 합
+        for(int i=1;i<=N;i++){
+            dp[i] = Integer.parseInt(st.nextToken()) + dp[i-1];
         }
 
         while(M-->0){
             st = new StringTokenizer(br.readLine());
             int i = Integer.parseInt(st.nextToken());
             int j = Integer.parseInt(st.nextToken());
-            bw.write(Integer.toString(sum[j]-sum[i-1])+"\n");
+            bw.write((dp[j]-dp[i-1])+"\n");
         }
-
         bw.flush();
 
-        br.close();
         bw.close();
+        br.close();
     }
 }
