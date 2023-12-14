@@ -1,69 +1,86 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int N, max = 0;
-    static ArrayList<ArrayList<Integer>> links = new ArrayList<>();
-    static boolean[] visited;
-    static int[] linkCnts;
-    static ArrayList<Integer> answers = new ArrayList<>();
+    public static int N, M;
+    public static ArrayList<Integer>[] relations;
+    public static int[] hackingCnt;
+    public static boolean[] visited;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken()); // 컴퓨터 수
-        int M = Integer.parseInt(st.nextToken()); // 신뢰 관계 수
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        linkCnts = new int[N+1];
-        visited = new boolean[N+1];
-
-        for(int i=0;i<=N;i++){
-            links.add(new ArrayList<Integer>());
+        relations = new ArrayList[N+1];
+        for(int i=1;i<=N;i++){
+            relations[i] = new ArrayList<>();
         }
 
         for(int i=0;i<M;i++){
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            links.get(a).add(b);
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            relations[A].add(B);
         }
 
-
+        hackingCnt = new int[N+1];
         for(int i=1;i<=N;i++){
             visited = new boolean[N+1];
-            dfs(i);
+            countHacking(i);
         }
 
+        ArrayList<Integer> maxIndex = new ArrayList<>();
+        int max = Integer.MIN_VALUE;
         for(int i=1;i<=N;i++){
-            int hackingCnt = linkCnts[i];
+            if(hackingCnt[i] > max){
+                maxIndex.clear();
 
-            if(hackingCnt > max){
-                answers.clear();;
-                answers.add(i);
-                max = hackingCnt;
+                max = hackingCnt[i];
+                maxIndex.add(i);
             }
-            else if(hackingCnt == max){
-                answers.add(i);
+            else if(hackingCnt[i] == max){
+                maxIndex.add(i);
             }
         }
 
-        for(int answer:answers){
-            bw.write(Integer.toString(answer)+" ");
+        StringBuilder ans = new StringBuilder();
+        for(int idx:maxIndex){
+            ans.append(idx).append(" ");
         }
 
+        bw.write(ans.toString());
         bw.flush();
+
+        br.close();
+        bw.close();
     }
 
-    public static void dfs(int computerNum){
-        visited[computerNum] = true;
+    public static void countHacking(int num){
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(num);
+        visited[num] = true;
 
-        for (int i: links.get(computerNum)){
-            if(!visited[i]){
-                linkCnts[i]++;
-                dfs(i);
+        while(!queue.isEmpty()){
+            int now = queue.poll();
+
+            for(int next:relations[now]){
+                if(visited[next]){
+                    continue;
+                }
+
+                visited[next] = true;
+                hackingCnt[next]++;
+                queue.add(next);
             }
         }
     }
