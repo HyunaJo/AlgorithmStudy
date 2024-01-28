@@ -90,16 +90,14 @@ public class Main {
                     continue;
                 }
 
-                if(visited[nh][nx][ny] || box[nh][nx][ny] == -1){
+                if(visited[nh][nx][ny] || box[nh][nx][ny] != 0){
                     continue;
                 }
 
-                if(box[nh][nx][ny] == 0){
-                    visited[nh][nx][ny] = true;
-                    box[nh][nx][ny] = 1;
-                    dq.add(new Location(nh,nx,ny));
-                    remainCnt--;
-                }
+                visited[nh][nx][ny] = true;
+                box[nh][nx][ny] = 1;
+                dq.add(new Location(nh,nx,ny));
+                remainCnt--;
             }
         }
     }
