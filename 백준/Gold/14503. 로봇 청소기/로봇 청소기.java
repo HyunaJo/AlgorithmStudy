@@ -2,8 +2,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,19 +9,8 @@ public class Main {
     static int[][] room;
     static int[][] directions = {{-1,0},{0,1},{1,0},{0,-1}};
     static int startX, startY;
-    static int robotDirection;
     static int cleaningCnt;
     static int dirtyCnt = 0;
-
-    static class Location{
-        int x;
-        int y;
-
-        public Location(int x, int y){
-            this.x = x;
-            this.y = y;
-        }
-    }
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -36,7 +23,7 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         startX = Integer.parseInt(st.nextToken());
         startY = Integer.parseInt(st.nextToken());
-        robotDirection = Integer.parseInt(st.nextToken());
+        d = Integer.parseInt(st.nextToken());
 
         room = new int[N][M];
         for(int i=0;i<N;i++){
@@ -64,15 +51,13 @@ public class Main {
         int y = startY;
 
         if(room[x][y] == 0){
-            room[x][y] = 2;
-            cleaningCnt++;
-            dirtyCnt--;
+            cleanRoom(x,y);
         }
 
-        // 청소 안함 = 0 , 벽 = 1;
+        // 청소 안함 = 0 , 벽 = 1 , 청소 함 = 2;
         while(dirtyCnt>0){
             if(checkAroundClean(x, y)){ // 주변 4칸 모두 청소된 경우
-                int backDirection = (robotDirection+2)%4; // 후진 방향
+                int backDirection = (d+2)%4; // 후진 방향
 
                 int backX = x + directions[backDirection][0];
                 int backY = y + directions[backDirection][1];
@@ -85,23 +70,24 @@ public class Main {
                 continue;
             }
 
-            robotDirection = (robotDirection+3)%4;
-            int nx = x + directions[robotDirection][0];
-            int ny = y + directions[robotDirection][1];
-            if(isOverRoom(nx,ny) || room[nx][ny] == 1){
+            d = (d+3)%4; // 반시계 90도 회전
+            int nx = x + directions[d][0];
+            int ny = y + directions[d][1];
+
+            if(room[nx][ny] != 0){
                 continue;
             }
 
-            if(room[nx][ny] == 2){
-                continue;
-            }
-
-            room[nx][ny] = 2;
-            cleaningCnt++;
-            dirtyCnt--;
+            cleanRoom(nx,ny);
             x = nx;
             y = ny;
         }
+    }
+
+    public static void cleanRoom(int x, int y){
+        room[x][y] = 2;
+        cleaningCnt++;
+        dirtyCnt--;
     }
 
     public static boolean checkAroundClean(int x, int y){
@@ -109,19 +95,11 @@ public class Main {
             int nx = x + directions[i][0];
             int ny = y + directions[i][1];
 
-            if(room[nx][ny]==1){
-                continue;
-            }
-
-            if(room[nx][ny] == 0){
+            if(room[nx][ny]==0){
                 return false;
             }
         }
 
         return true;
-    }
-
-    public static boolean isOverRoom(int x, int y){
-        return (x<0 || x>=N || y<0 || y>=M);
     }
 }
