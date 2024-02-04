@@ -35,14 +35,12 @@ public class Main {
                 continue;
             }
 
-            if(!isPossible(cnt,j)){
-                continue;
+            if(isPossible(cnt,j)){
+                visited[j] = true;
+                chess[cnt] = j;
+                countPossible(cnt+1);
+                visited[j] = false;
             }
-
-            visited[j] = true;
-            chess[cnt] = j;
-            countPossible(cnt+1);
-            visited[j] = false;
         }
     }
 
