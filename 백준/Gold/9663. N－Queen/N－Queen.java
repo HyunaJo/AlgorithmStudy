@@ -4,43 +4,54 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class Main {
-    public static int N;
-    public static int[] arr;
-    public static int ans = 0;
+    static int N;
+    static int answer = 0;
+    static int[] chess;
+    static boolean[] visited;
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         N = Integer.parseInt(br.readLine());
+        chess = new int[N];
+        visited = new boolean[N];
+        countPossible(0);
+        bw.write(Integer.toString(answer));
+        bw.flush();
 
-        arr = new int[N];
-        nQueen(0);
-        bw.write(Integer.toString(ans));
         br.close();
         bw.close();
     }
 
-    public static void nQueen(int row){
-        if(row == N){
-            ans++;
+    public static void countPossible(int cnt){
+        if(cnt == N){
+            answer++;
             return;
         }
 
-        for(int j=0;j<N;j++){ // j열에 체스 놓는 경우
-            boolean isPossible = true; // 가능한 위치인지 판단
-            for(int i=0;i<row;i++){ // i행
-                if(arr[i]==j || row-i==j-arr[i] || row-i==arr[i]-j) { // 같은 열에 존재, 대각선 확인
-                    isPossible = false;
-                    break;
-                }
+        for(int j=0;j<N;j++){ // 0~N번째 열에 체스 두기
+            if(visited[j]){
+                continue;
             }
 
-            if(isPossible){
-                arr[row] = j;
-                nQueen(row+1);
+            if(!isPossible(cnt,j)){
+                continue;
             }
 
+            visited[j] = true;
+            chess[cnt] = j;
+            countPossible(cnt+1);
+            visited[j] = false;
         }
+    }
+
+    public static boolean isPossible(int row, int col){
+        for(int i=0;i<row;i++){
+            if(row-i==col-chess[i] || row-i==chess[i]-col){ // 대각선 체크
+                return false;
+            }
+        }
+        return true;
     }
 }
