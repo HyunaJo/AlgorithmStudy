@@ -1,26 +1,21 @@
 class Solution {
     static int[] sales = {10,20,30,40};
     static int userCnt, emoticonCnt;
-    static int maxSubscriber, maxProfit;
+    static int[] answer = new int[2];
     static int[] appliedSales;
     
     public int[] solution(int[][] users, int[] emoticons) {
         userCnt = users.length;
         emoticonCnt = emoticons.length;
         appliedSales = new int[emoticonCnt];
-        
-        maxSubscriber = 0;
-        maxProfit = 0;
         applySales(0, users, emoticons);
         
-        int[] answer = {maxSubscriber, maxProfit};
         return answer;
     }
     
     public static void applySales(int cnt, int[][] users, int[] emoticons){
         if(cnt == emoticonCnt){
             getResult(users, emoticons);
-            // System.out.println(maxSubscriber+" "+maxProfit);
             return;
         }
         
@@ -50,14 +45,14 @@ class Solution {
             }
             profit += totalPrice;
         }
-        if(subscriber>maxSubscriber){
-            maxSubscriber = subscriber;
-            maxProfit = profit;
+        if(subscriber>answer[0]){
+            answer[0] = subscriber;
+            answer[1] = profit;
             return;
         }
         
-        if(subscriber == maxSubscriber){
-            maxProfit = Math.max(maxProfit,profit);
+        if(subscriber == answer[0]){
+            answer[1] = Math.max(answer[1],profit);
         }
     }
 }
