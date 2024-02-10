@@ -5,8 +5,9 @@ import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int n,m;
-    public static int[] nums;
+    static int n,m;
+    static int[] nums;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,27 +18,29 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
 
         nums = new int[n+1];
-        for(int i=0;i<=n;i++)
+        for(int i=0;i<=n;i++){
             nums[i] = i;
+        }
 
-        while(m>0){
+        while(m-->0){
             st = new StringTokenizer(br.readLine());
             int cmd = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            if(cmd == 0){ // 합집합
+            if(cmd == 0){
                 union(a,b);
+                continue;
             }
-            else if(cmd == 1){ // 포함 확인
-                if(findParent(a)==findParent(b))
-                    bw.write("YES\n");
-                else
-                    bw.write("NO\n");
-            }
-            m--;
-        }
 
+            if(findParent(a) == findParent(b)){
+                sb.append("YES\n");
+                continue;
+            }
+
+            sb.append("NO\n");
+        }
+        bw.write(sb.toString());
         bw.flush();
 
         br.close();
@@ -45,22 +48,22 @@ public class Main {
     }
 
     public static void union(int a, int b){
-        if(a==b)
+        if(a == b){
             return;
+        }
 
         a = findParent(a);
         b = findParent(b);
 
-        if(a>b)
-            nums[a] = b;
-        else
-            nums[b] = a;
+        nums[a] = b;
     }
 
-    public static int findParent(int a){
-        if(nums[a]==a)
-            return a;
+    public static int findParent(int child){
+        if(child == nums[child]){
+            return child;
+        }
 
-        return nums[a] = findParent(nums[a]);
+        return nums[child] = findParent(nums[child]);
     }
+
 }
