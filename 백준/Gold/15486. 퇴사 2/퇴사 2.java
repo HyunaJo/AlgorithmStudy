@@ -5,49 +5,50 @@ import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int N; // 남은 일수
-    public static Consulting[] consultings;
-    public static int[] profit;
+    static int N;
+    static Consulting[] consultings;
+    static int[] dp;
 
-    public static class Consulting{
-        int date;
-        int cost;
+    static class Consulting {
+        int endDate;
+        int price;
 
-        public Consulting(int date, int cost){
-            this.date = date;
-            this.cost = cost;
+        public Consulting(int endDate, int price){
+            this.endDate = endDate;
+            this.price = price;
         }
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         N = Integer.parseInt(br.readLine());
-
-        consultings = new Consulting[N];
-        profit = new int[N+1];
-        for(int i=0;i<N;i++){
+        consultings = new Consulting[N+1];
+        for(int i=1;i<=N;i++){
             StringTokenizer st = new StringTokenizer(br.readLine());
-            consultings[i] = new Consulting(Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()));
+            int period = Integer.parseInt(st.nextToken());
+            int price = Integer.parseInt(st.nextToken());
+            consultings[i] = new Consulting(i+period,price);
         }
 
-        int maxProfit = 0; // i일까지의 최대 수익
-        int nextDate = 0;
-        for(int i=0;i<N;i++){
-            maxProfit = Math.max(maxProfit, profit[i]);
+        dp = new int[N+2];
+        int max = 0;
+        for(int i=1;i<=N;i++){
+            Consulting consulting = consultings[i];
+            max = Math.max(max,dp[i]);
 
-            nextDate = i + consultings[i].date;
-            if(nextDate<=N){ // 퇴사 전에 끝나는 상담일 경우
-                profit[nextDate] = Math.max(profit[nextDate], maxProfit+consultings[i].cost);
+            if(consulting.endDate > N+1){
+                continue;
             }
+
+            dp[consulting.endDate] = Math.max(dp[consulting.endDate], max+consulting.price);
         }
 
-        for(int i=0;i<=N;i++){
-            maxProfit = Math.max(maxProfit, profit[i]);
+        for(int i=1;i<N+2;i++){
+            max = Math.max(max,dp[i]);
         }
-        
-        bw.write(Integer.toString(maxProfit));
+        bw.write(Integer.toString(max));
         bw.flush();
 
         br.close();
