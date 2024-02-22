@@ -7,55 +7,65 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.StringTokenizer;
 
+
 public class Main {
-    public static Deque<Integer> deque = new ArrayDeque<>();
-    public static int[] indegree; // 들어오는 간선의 수
-    public static ArrayList<Integer>[] edges;
-    public static int N,M;
+	static int N,M;
+	static ArrayList<Integer>[] links;
+	static int[] tallCnt;
+	static StringBuilder sb = new StringBuilder();
+	
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		
+		links = new ArrayList[N+1];
+		for(int i=1;i<=N;i++) {
+			links[i] = new ArrayList<>();
+		}
+		
+		tallCnt = new int[N+1];
+		for(int i=0;i<M;i++) {
+			st = new StringTokenizer(br.readLine());
+			int front = Integer.parseInt(st.nextToken());
+			int back = Integer.parseInt(st.nextToken());
+			
+			links[front].add(back);
+			tallCnt[back]++;
+		}
 
-    public static void main(String[] args) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		findResult();
+		
+		bw.write(sb.toString());
+		bw.flush();
+		
+		br.close();
+		bw.close();
+	}
+	
+	public static void findResult() {
+		Deque<Integer> dq = new ArrayDeque<>();
+		for(int i=1;i<=N;i++) {
+			if(tallCnt[i]==0) {
+				dq.add(i);
+			}
+		}
+		
+		while(!dq.isEmpty()) {
+			int now = dq.poll();
+			sb.append(now).append(" ");
+			
+			for(int next:links[now]) {
+				tallCnt[next]--;
+				
+				if(tallCnt[next] == 0) {
+					dq.add(next);
+				}
+			}
+		}
+	}
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken()); // 학생 수
-        M = Integer.parseInt(st.nextToken()); // 키를 비교한 횟수
-
-        edges = new ArrayList[N+1];
-        for(int i=1;i<=N;i++)
-            edges[i] = new ArrayList<>();
-
-        indegree = new int[N+1];
-        for(int i=0;i<M;i++){
-            st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            indegree[b]++;
-            edges[a].add(b);
-        }
-
-        for(int i=1;i<=N;i++){
-            if(indegree[i]==0)
-                deque.add(i);
-        }
-        while(!deque.isEmpty()){
-            int cur = deque.pollFirst();
-
-            bw.write(Integer.toString(cur)+" ");
-
-            int size = edges[cur].size();
-            for(int i=0;i<size;i++){
-                int targetId = edges[cur].get(i);
-                indegree[targetId]--;
-                if(indegree[targetId]==0)
-                    deque.add(targetId);
-            }
-        }
-
-        bw.flush();
-
-        br.close();
-        bw.close();
-    }
 }
