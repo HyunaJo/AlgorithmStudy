@@ -22,8 +22,8 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        N = Integer.parseInt(br.readLine());
-        results = new int[N+1][PLAYER+1];
+        N = Integer.parseInt(br.readLine()); // 이닝 수
+        results = new int[N+1][PLAYER+1]; // 결과 출력
         for(int t=1;t<=N;t++){
             StringTokenizer st = new StringTokenizer(br.readLine());
             for(int i=1;i<=PLAYER;i++){
@@ -31,12 +31,14 @@ public class Main {
             }
         }
 
-        order = new int[PLAYER];
-        selected = new boolean[PLAYER+1];
-        order[3] = 1;
-        selected[1] = true;
-        makeOrder(0);
-        
+        // 순서 정해서 게임해보기
+        order = new int[PLAYER]; // 타순
+        selected = new boolean[PLAYER+1]; // 순서에 선택됐는지 여부
+        order[3] = 1; // 4번째 타자는 무조건 1번 선수
+        selected[1] = true; // 1번 선수 선택 여부 표시
+        makeOrder(0); // 게임 시작
+
+        // 결과 출력
         bw.write(Integer.toString(max));
         bw.flush();
 
@@ -47,23 +49,21 @@ public class Main {
 
     public static void makeOrder(int cnt){
         if(cnt == PLAYER){
-            orderIdx = 0;
-            if(order[0] == 5 && order[1]==6 && order[2]==7){
-                System.out.print("");
-            }
-            int score = 0;
+            orderIdx = 0; // 현재 순서
+            int score = 0; // 점수
             for(int inning=1;inning<=N;inning++){
-                score += playGame(inning);
+                score += playGame(inning); // 현재 이닝 최종 점수 더해주기
             }
 
-            max = Math.max(max, score);
+            max = Math.max(max, score); // 최대 점수 변경
         }
 
-        if(cnt == 3){
+        if(cnt == 3){ // 4번 선수는 이미 정해졌으므로
             makeOrder(cnt+1);
             return;
         }
 
+        // 순서 정해주기
         for(int i=2;i<=PLAYER;i++){
             if(selected[i]){
                 continue;
