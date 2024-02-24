@@ -2,25 +2,21 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    static final int PLAYER = 9;
-    static final int BASE = 3;
-    static final int OUT = 0;
-    static final int HIT = 4;
-    static final int DOUBLE = 2;
-    static final int TRIPLE = 3;
-    static final int HOMERUN = 4;
+    static final int PLAYER = 9; // 선수 수
+    static final int BASE = 3; // 3루까지 존재
+    static final int OUT = 0; // 아웃
+    static final int HOMERUN = 4; // 홈런
 
-    static int N;
-    static int[][] results;
-    static boolean[] base;
-    static int[] order;
-    static boolean[] selected;
-    static int max = 0;
-    static int orderIdx;
+    static int N; // 이닝 수
+    static int[][] results; // 이닝 별 선수 결과
+    static boolean[] base; // 1,2,3루 선수 여부
+    static int[] order; // 선수 순서
+    static boolean[] selected; // 순서 정할 때 선택된 선수인지
+    static int max = 0; // 최대 점수
+    static int orderIdx; // 현재 차례의 선수 번호
 
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,7 +36,12 @@ public class Main {
         order[3] = 1;
         selected[1] = true;
         makeOrder(0);
-        System.out.println(max);
+        
+        bw.write(Integer.toString(max));
+        bw.flush();
+
+        br.close();
+        bw.close();
 
     }
 
@@ -56,7 +57,6 @@ public class Main {
             }
 
             max = Math.max(max, score);
-//            System.out.println(max);
         }
 
         if(cnt == 3){
