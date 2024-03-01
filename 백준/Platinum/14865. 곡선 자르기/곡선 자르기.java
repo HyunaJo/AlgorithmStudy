@@ -32,7 +32,7 @@ public class Main {
 
         @Override
         public int compareTo(Point o){
-            return this.x - o.x;
+            return Integer.compare(this.x,o.x);
         }
     }
 
@@ -59,6 +59,8 @@ public class Main {
             locs.add(now);
         }
 
+        locs.add(locs.peek());
+
         ArrayList<Point> points = new ArrayList<>();
         Location prior = locs.poll();
         int idx = 0;
@@ -68,7 +70,7 @@ public class Main {
 
             if((prior.y>0 && now.y<0) || (prior.y<0 && now.y>0)){
                 points.add(new Point(now.x,idx));
-
+                prior = now;
                 if(++cnt == 2){
                     cnt = 0;
                     idx++;
@@ -116,7 +118,10 @@ public class Main {
             }
         }
 
-        System.out.println(notOuter+" "+notInner);
+        bw.write(notOuter+" "+notInner);
+        bw.flush();
 
+        br.close();
+        bw.close();
     }
 }
