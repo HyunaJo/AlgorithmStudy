@@ -3,16 +3,23 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int N,M;
-    public static int[][] map;
-    public static ArrayList<Location> chickens = new ArrayList<>();
-    public static ArrayList<Location> houses = new ArrayList<>();
-    public static int ans = Integer.MAX_VALUE;
+    static final int HOUSE = 1;
+    static final int CHICKEN = 2;
 
-    public static class Location{
+    static int N,M;
+    static int[][] map;
+    static ArrayList<Location> houses;
+    static ArrayList<Location> chickens;
+    static int houseCnt, chickenCnt;
+    static int[][] distances;
+    static int[] selected;
+    static int min;
+
+    static class Location{
         int x;
         int y;
 
@@ -22,7 +29,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
@@ -31,69 +38,71 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         map = new int[N][N];
+        houses = new ArrayList<>();
+        chickens = new ArrayList<>();
         for(int i=0;i<N;i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=0;j<N;j++) {
-                int type = Integer.parseInt(st.nextToken());
-                map[i][j] = type;
-                if(type == 1) // 집인 경우
+            for(int j=0;j<N;j++){
+                map[i][j] = Integer.parseInt(st.nextToken());
+
+                if(map[i][j] == HOUSE){
                     houses.add(new Location(i,j));
-                else if(type == 2) // 치킨집인 경우
+                    continue;
+                }
+
+                if(map[i][j] == CHICKEN){
                     chickens.add(new Location(i,j));
+                    continue;
+                }
             }
         }
 
-        dfs(chickens.size()-M, 0);
+        houseCnt = houses.size();
+        chickenCnt = chickens.size();
+        distances = new int[houseCnt][chickenCnt];
+        for(int i=0;i<houseCnt;i++){
+            Location house = houses.get(i);
+            for(int j=0;j<chickenCnt;j++){
+                Location chicken = chickens.get(j);
+                distances[i][j] = Math.abs(house.x-chicken.x)+Math.abs(house.y-chicken.y);
+            }
+        }
 
-        bw.write(Integer.toString(ans));
+        selected = new int[M];
+        min = Integer.MAX_VALUE;
+        for(int i=0;i<chickenCnt;i++){
+            selected[0] = i;
+            findMin(1,i+1);
+        }
+
+        bw.write(Integer.toString(min));
         bw.flush();
 
         br.close();
         bw.close();
     }
 
-    public static void dfs(int rest, int idx){
-        if(rest == 0){ // M개 남기고 폐업한 경우
-            int dist = getDist();
-            if(ans > dist)
-                ans = dist;
+    public static void findMin(int cnt, int idx){
+        if(cnt == M){
+            min = Math.min(min, getChickenDistance());
             return;
         }
 
-        if(idx > chickens.size()-1) // 더이상 폐업할 치킨집 없는 경우
-            return;
-
-        // idx에 해당하는 치킨집 폐업하기
-        int closedChickenY = chickens.get(idx).y; // 폐업할 치킨집
-        chickens.get(idx).y = -1;
-        dfs(rest-1, idx+1);
-        chickens.get(idx).y = closedChickenY;
-
-        // 폐업 안하기
-        dfs(rest, idx+1);
+        for(int i=idx;i<chickenCnt;i++){
+            selected[cnt] = i;
+            findMin(cnt+1, i+1);
+        }
     }
 
-    public static int getDist(){
-        int houseCnt = houses.size();
-        int chickenCnt = chickens.size();
-
-        int distSum = 0;
+    public static int getChickenDistance(){
+        int sum = 0;
         for(int i=0;i<houseCnt;i++){
-            Location house = houses.get(i);
-
-            int minDist = Integer.MAX_VALUE;
-            for(int j=0;j<chickenCnt;j++){
-                Location chicken = chickens.get(j);
-
-                if(chicken.y == -1) // 폐업한 경우
-                    continue;
-
-                int dist = Math.abs(house.x-chicken.x)+Math.abs(house.y-chicken.y);
-                if(dist<minDist)
-                    minDist = dist;
+            int dist = distances[i][selected[0]];
+            for(int j=1;j<M;j++){
+                dist = Math.min(dist,distances[i][selected[j]]);
             }
-            distSum += minDist;
+            sum += dist;
         }
-        return distSum;
+        return sum;
     }
 }
