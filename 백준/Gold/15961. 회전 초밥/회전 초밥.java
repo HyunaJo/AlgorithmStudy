@@ -2,61 +2,58 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N,d,k,c;
-	static int[] sushi;
-	static int maxCnt;
-	
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken()); // 접시 수
-		d = Integer.parseInt(st.nextToken()); // 초밥 가짓수
-		k = Integer.parseInt(st.nextToken()); // 연속해서 먹는 접시의 수
-		c = Integer.parseInt(st.nextToken()); // 쿠폰 번호
-		
-		sushi = new int[N];
-		for(int i=0;i<N;i++) {
-			sushi[i] = Integer.parseInt(br.readLine());
-		}
-		
-		findMax();
-		bw.write(Integer.toString(maxCnt));
-		bw.flush();
-		
-		br.close();
-		bw.close();
-	}
-	
-	public static void findMax() {
-		int left = 0;
-		int right = k-1;
-		
-		HashMap<Integer, Integer> map = new HashMap<>();
-		map.put(c, 1);
-		for(int i=0;i<k;i++) {
-			map.put(sushi[i], map.getOrDefault(sushi[i], 0)+1);
-		}
-		
-		maxCnt = map.keySet().size();
-		while(left<N) {
-			int leftSushi = sushi[left];
-			map.put(leftSushi, map.get(leftSushi)-1);
-			if(map.get(leftSushi)==0) {
-				map.remove(leftSushi);
-			}
-			
-			left++;
-			right = (right+1)%N;
-			
-			map.put(sushi[right], map.getOrDefault(sushi[right], 0)+1);
-			maxCnt = Math.max(maxCnt, map.keySet().size());
-		}
-	}
+    static int N,d,k,c;
+    static int[] dishes;
+    static int[] selected;
+    static int max;
 
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        d = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+
+        dishes = new int[N];
+        for(int i=0;i<N;i++){
+            dishes[i] = Integer.parseInt(br.readLine());
+        }
+
+        selected = new int[d+1];
+        selected[c]++;
+        int cnt = 1;
+        int lp = 0;
+        int rp = k-1;
+        for(int i=lp;i<=rp;i++){
+            if(selected[dishes[i]] == 0){
+                cnt++;
+            }
+            selected[dishes[i]]++;
+        }
+
+        max = cnt;
+        while(lp<N){
+            if(--selected[dishes[lp]] == 0){
+                cnt--;
+            }
+            lp++;
+            rp = (rp+1)%N;
+            if(selected[dishes[rp]]++ == 0){
+                cnt++;
+            }
+            max = Math.max(max,cnt);
+        }
+
+        bw.write(Integer.toString(max));
+        bw.flush();
+
+        br.close();
+        bw.close();
+    }
 }
