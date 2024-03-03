@@ -110,9 +110,8 @@ public class Main {
                 if (sight[nextVertex.index] && !(nextVertex.index == N - 1)) {
                     continue;
                 }
+                pqueue.add(new Vertex(nextVertex.index,minWeight[nearVertex.index] + nextVertex.weight));
                 minWeight[nextVertex.index] = minWeight[nearVertex.index] + nextVertex.weight;
-                pqueue.add(new Vertex(nextVertex.index,minWeight[nextVertex.index]));
-
             }
         }
 
@@ -129,3 +128,4 @@ public class Main {
         br.close();
     }
 }
+
