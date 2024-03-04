@@ -7,9 +7,9 @@ import java.util.StringTokenizer;
 public class Main {
     static int N,S;
     static int[] nums;
-    static int min;
+    static int ans;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] argrs) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
@@ -23,31 +23,19 @@ public class Main {
             nums[i] = Integer.parseInt(st.nextToken());
         }
 
-        min = Integer.MAX_VALUE;
-        findMin();
-
-        bw.write((min==Integer.MAX_VALUE)?"0":Integer.toString(min));
-        bw.flush();
-
-        br.close();
-        bw.close();
-    }
-
-    public static void findMin(){
         int lp = 0;
         int rp = 0;
-        int sum = nums[lp];
-
-        while(lp<N){
-            if(sum < S){
+        int sum = nums[0];
+        ans = Integer.MAX_VALUE;
+        while(lp<N ){
+            if(sum<S){
                 if(++rp == N){
                     break;
                 }
                 sum += nums[rp];
                 continue;
             }
-
-            min = Math.min(min, rp-lp+1);
+            ans = Math.min(ans, rp-lp+1);
             if(lp == rp){
                 sum -= nums[lp++];
                 if(++rp == N){
@@ -60,5 +48,10 @@ public class Main {
             sum -= nums[lp++];
         }
 
+        bw.write((ans==Integer.MAX_VALUE)?"0":Integer.toString(ans));
+        bw.flush();
+
+        br.close();
+        bw.flush();
     }
 }
