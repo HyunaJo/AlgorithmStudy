@@ -1,51 +1,79 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    static int N,M;
+    static Integer[] cranes;
+    static Integer[] weights;
+    static int[] lastChecked;
+    static int remainedCnt;
+
+    public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int N = Integer.parseInt(br.readLine());
-        List<Integer> crane = new ArrayList<>();
+        N = Integer.parseInt(br.readLine());
 
+        cranes = new Integer[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int i = 0; i<N; i++)
-            crane.add(Integer.parseInt(st.nextToken()));
+        for(int i=0;i<N;i++){
+            cranes[i] = Integer.parseInt(st.nextToken());
+        }
 
-        int M = Integer.parseInt(br.readLine());
-        List<Integer> box = new ArrayList<>();
-
+        M = Integer.parseInt(br.readLine());
+        weights = new Integer[M];
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i<M; i++)
-            box.add(Integer.parseInt(st.nextToken()));
+        for(int i=0;i<M;i++){
+            weights[i] = Integer.parseInt(st.nextToken());
+        }
 
-        //내림차순으로 정렬
-        crane.sort(Collections.reverseOrder());
-        box.sort(Collections.reverseOrder());
-
-        if(crane.get(0)<box.get(0)){
-            System.out.println(-1);
+        Arrays.sort(cranes, Collections.reverseOrder());
+        Arrays.sort(weights, Collections.reverseOrder());
+        if(cranes[0] < weights[0]){
+            bw.write("-1");
+            bw.flush();
             return;
         }
 
-        int day = 0;
-        while(!box.isEmpty()){
-            int boxIdx = 0, craneIdx = 0;
+        lastChecked = new int[N];
+        int time = 0;
+        remainedCnt = M;
+        while(remainedCnt>0){
+            for(int i=0;i<N;i++){
+                int crane = cranes[i];
+                boolean removed = false;
 
-            while(craneIdx<N){
-                if(boxIdx == box.size())
-                    break;
-                else if(crane.get(craneIdx) >= box.get(boxIdx)){
-                    box.remove(boxIdx);
-                    craneIdx++;
+                for(int j=lastChecked[i];j<M;j++){
+                    if(weights[j] == -1){
+                        continue;
+                    }
+
+                    lastChecked[i]++;
+                    if(crane >= weights[j]){
+                        weights[j] = -1;
+                        remainedCnt--;
+                        removed = true;
+                        break;
+                    }
                 }
-                else
-                    boxIdx++;
-            }
 
-            day++;
+                if(!removed){
+                    break;
+                }
+            }
+            time++;
         }
 
-        System.out.println(day);
+        bw.write(Integer.toString(time));
+        bw.flush();
+
+        br.close();
+        bw.close();
     }
 }
+
