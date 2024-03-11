@@ -39,7 +39,6 @@ class Solution {
         }
 
         visited = new boolean[MAX + 1];
-        visited[connectedIdx] = true;
         for(int start:links[connectedIdx]){
             indegree[start]--;
             find(start);
