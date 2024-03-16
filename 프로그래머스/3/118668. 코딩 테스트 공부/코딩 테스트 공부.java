@@ -40,7 +40,6 @@ class Solution {
             maxCop = Math.max(maxCop,problems[i][COP_REQ]);
         }
         
-        System.out.println(maxAlp+" "+maxCop);
         minCost = new int[1501][1501];
         for(int i=0;i<=1500;i++){
             for(int j=0;j<=1500;j++){
@@ -58,17 +57,10 @@ class Solution {
         
         while(!pq.isEmpty()){
             Problem now = pq.poll();
-            // System.out.println(now.alp+" "+now.cop+" "+now.cost);
             
             if(now.alp >= maxAlp && now.cop >= maxCop){
-                // System.out.println(now.cost);
                 return now.cost;
             }
-            
-            // if(now.alp+1 >= 1500 || now.cop+1 >= 1500){
-            //     System.out.println((now.alp+1)+" "+(now.cop+1));
-            //     return;
-            // }
             
             // 알고력 +1
             if(minCost[now.alp+1][now.cop] > now.cost+1){
