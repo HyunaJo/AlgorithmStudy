@@ -3,21 +3,25 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
     static int n;
     static ArrayList<Edge>[] edges;
-    static boolean[] visited;
-    static int ans;
+    static int[] weights;
 
-    static class Edge{
+    static class Edge implements Comparable<Edge>{
         int end;
         int w;
 
         public Edge(int end, int w){
             this.end = end;
             this.w = w;
+        }
+
+        public int compareTo(Edge o){
+            return this.w-o.w;
         }
     }
 
@@ -41,26 +45,46 @@ public class Main {
             edges[child].add(new Edge(parent,w));
         }
 
-        ans = 0;
-        for(int i=1;i<=n;i++){
-            visited = new boolean[n+1];
-            findMax(i, 0);
-        }
+        weights = new int[n+1];
+        int[] result = findMaxNode(1);
+        int[] answer = findMaxNode(result[0]);
 
-        bw.write(Integer.toString(ans));
+        bw.write(Integer.toString(answer[1]));
         bw.flush();
     }
 
-    public static void findMax(int idx, int sum){
-        ans = Math.max(ans, sum);
-        visited[idx] = true;
+    public static int[] findMaxNode(int start){
+        for(int i=1;i<=n;i++){
+            weights[i] = Integer.MAX_VALUE;
+        }
 
-        for(Edge edge:edges[idx]){
-            if(visited[edge.end]){
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
+        pq.add(new Edge(start,0));
+        weights[start] = 0;
+
+        while(!pq.isEmpty()){
+            Edge now = pq.poll();
+
+            for(Edge edge:edges[now.end]){
+                if(weights[edge.end] <= weights[now.end] + edge.w){
+                    continue;
+                }
+
+                weights[edge.end] = weights[now.end] + edge.w;
+                pq.add(new Edge(edge.end, weights[edge.end]));
+            }
+        }
+
+        int maxWeight = 0;
+        int maxNode = 1;
+        for(int i=1;i<=n;i++){
+            if(maxWeight >= weights[i]){
                 continue;
             }
-
-            findMax(edge.end, sum+edge.w);
+            maxWeight = weights[i];
+            maxNode = i;
         }
+
+        return new int[]{maxNode, maxWeight};
     }
 }
