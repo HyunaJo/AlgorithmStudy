@@ -16,13 +16,7 @@ public class Main {
         x = Integer.parseInt(st.nextToken());
         y = Integer.parseInt(st.nextToken());
 
-        int g = 1;
-        if(x>y){
-            g = gcd(x,y);
-        }
-        else{
-            g = gcd(y,x);
-        }
+        int g = (x>y)?gcd(x,y):gcd(y,x);
 
         sb.append(g).append("\n");
         sb.append(x*y/g);
